@@ -29,10 +29,14 @@ Despues copiar el archivo `.env.example` a `.env` y completar los datos:
 PORT=8080
 MONGO_URL=mongodb://localhost:27017/adoptme
 MONGO_URL_TEST=mongodb://localhost:27017/adoptme_test
+JWT_SECRET=poner_aca_una_clave_secreta
 ```
 
 `MONGO_URL_TEST` es la base que se usa para correr los tests, conviene que sea
 distinta a la de desarrollo porque las colecciones se borran en cada test.
+
+`JWT_SECRET` es la clave con la que se firman los tokens de las sesiones. El
+servidor no arranca si falta `MONGO_URL` o `JWT_SECRET`.
 
 ## Como levantar el proyecto
 
@@ -135,11 +139,15 @@ docker pull terab12/adoptme:latest
 ```
 
 ```bash
-docker run -p 8080:8080 -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" terab12/adoptme:latest
+docker run -p 8080:8080 \
+  -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" \
+  -e JWT_SECRET="poner_aca_una_clave_secreta" \
+  terab12/adoptme:latest
 ```
 
-La variable `MONGO_URL` es obligatoria. Si la base de datos corre en Atlas hay
-que pasar la cadena de conexion de Atlas en lugar de la de localhost.
+Las variables `MONGO_URL` y `JWT_SECRET` son obligatorias, sin ellas el
+contenedor no levanta. Si la base de datos corre en Atlas hay que pasar la
+cadena de conexion de Atlas en lugar de la de localhost.
 
 Para construir la imagen a mano desde el repositorio:
 
