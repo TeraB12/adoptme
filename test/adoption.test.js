@@ -88,6 +88,20 @@ describe('Tests funcionales del router de adopciones',function(){
             expect(body.status).to.equal('error');
             expect(body.error).to.equal('Adoption not found');
         })
+
+        it('Devuelve 400 si el id no tiene el formato de un ObjectId',async function(){
+            const {statusCode,body} = await requester.get('/api/adoptions/123');
+            expect(statusCode).to.equal(400);
+            expect(body.status).to.equal('error');
+            expect(body.error).to.equal('Invalid id format');
+        })
+
+        it('La API sigue respondiendo despues de recibir un id invalido',async function(){
+            await requester.get('/api/adoptions/123');
+
+            const {statusCode} = await requester.get('/api/adoptions');
+            expect(statusCode).to.equal(200);
+        })
     })
 
     describe('POST /api/adoptions/:uid/:pid',function(){
@@ -149,6 +163,22 @@ describe('Tests funcionales del router de adopciones',function(){
             expect(statusCode).to.equal(400);
             expect(body.status).to.equal('error');
             expect(body.error).to.equal('Pet is already adopted');
+        })
+
+        it('Devuelve 400 si el id del usuario no tiene el formato de un ObjectId',async function(){
+            const pet = await createPet();
+
+            const {statusCode,body} = await requester.post(`/api/adoptions/123/${pet._id}`);
+            expect(statusCode).to.equal(400);
+            expect(body.error).to.equal('Invalid id format');
+        })
+
+        it('Devuelve 400 si el id de la mascota no tiene el formato de un ObjectId',async function(){
+            const user = await createUser();
+
+            const {statusCode,body} = await requester.post(`/api/adoptions/${user._id}/123`);
+            expect(statusCode).to.equal(400);
+            expect(body.error).to.equal('Invalid id format');
         })
 
         it('No permite adoptar dos veces la misma mascota',async function(){

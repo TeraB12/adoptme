@@ -111,6 +111,19 @@ paths:
                     example: success
                   payload:
                     $ref: '#/components/schemas/User'
+        "400":
+          description: El id enviado no tiene el formato de un ObjectId de Mongo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: Invalid id format
         "404":
           description: No existe un usuario con ese id
           content:
@@ -158,6 +171,19 @@ paths:
                   message:
                     type: string
                     example: User updated
+        "400":
+          description: El id enviado no tiene el formato de un ObjectId de Mongo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: Invalid id format
         "404":
           description: No existe un usuario con ese id
           content:
@@ -199,5 +225,31 @@ paths:
                   message:
                     type: string
                     example: User deleted
+        "400":
+          description: El id enviado no tiene el formato de un ObjectId de Mongo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: Invalid id format
+        "404":
+          description: No existe un usuario con ese id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: User not found
         "500":
           description: Error interno del servidor

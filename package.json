@@ -1,8 +1,8 @@
 {
-  "name": "plantilladocumentacion",
+  "name": "adoptme",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API de adopcion de mascotas. Proyecto final de Programacion Backend III de Coderhouse.",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
@@ -10,7 +10,7 @@
     "test": "mocha test/adoption.test.js --timeout 10000 --exit"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mateo Pereyra",
   "license": "ISC",
   "dependencies": {
     "@faker-js/faker": "^10.5.0",

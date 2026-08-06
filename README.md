@@ -115,6 +115,13 @@ curl -X POST http://localhost:8080/api/mocks/generateData \
 Los usuarios generados tienen la contraseña `coder123` encriptada, el rol varia
 entre `user` y `admin` y el campo `pets` viene vacio.
 
+## Manejo de errores
+
+Los controladores capturan los errores y los mandan a un middleware que esta al
+final de `app.js`. Si se manda un id que no tiene el formato de un ObjectId de
+Mongo la API responde 400 con el mensaje `Invalid id format` en lugar de cortarse,
+y cualquier otro error que no este contemplado devuelve un 500.
+
 ## Docker
 
 Imagen del proyecto en Docker Hub:

@@ -8,6 +8,7 @@ import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import mocksRouter from './routes/mocks.router.js';
 import specs from './docs/swagger.js';
+import errorHandler from './middlewares/errorHandler.js';
 
 const app = express();
 
@@ -20,5 +21,7 @@ app.use('/api/adoptions',adoptionsRouter);
 app.use('/api/sessions',sessionsRouter);
 app.use('/api/mocks',mocksRouter);
 app.use('/api/docs',swaggerUiExpress.serve,swaggerUiExpress.setup(specs));
+
+app.use(errorHandler);
 
 export default app;
