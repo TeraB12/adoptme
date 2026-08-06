@@ -1,0 +1,203 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Id autogenerado por Mongo
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario, no se puede repetir
+        password:
+          type: string
+          description: Contraseña encriptada con bcrypt
+        role:
+          type: string
+          description: Rol del usuario dentro de la aplicacion
+          enum:
+            - user
+            - admin
+        pets:
+          type: array
+          description: Mascotas adoptadas por el usuario
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+      example:
+        _id: 65f1b2c4a1d3e45678901234
+        first_name: Mateo
+        last_name: Pereyra
+        email: mateo.pereyra@coder.com
+        password: $2b$10$o27H8FobQAADQIIX7tfHx.EpI6w6cpaft77Giifk7fsNS731lhH66
+        role: user
+        pets: []
+  requestBodies:
+    updateUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario
+        role:
+          type: string
+          description: Rol del usuario
+      example:
+        first_name: Mateo
+        last_name: Pereyra
+        email: mateo.pereyra@coder.com
+        role: admin
+
+paths:
+  /api/users:
+    get:
+      summary: Devuelve todos los usuarios
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Listado de usuarios obtenido correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        "500":
+          description: Error interno del servidor, generalmente por fallas en la conexion a la base de datos
+
+  /api/users/{uid}:
+    get:
+      summary: Devuelve un usuario a partir de su id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: Id del usuario que se quiere buscar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    $ref: '#/components/schemas/User'
+        "404":
+          description: No existe un usuario con ese id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: User not found
+        "500":
+          description: Error interno del servidor
+
+    put:
+      summary: Actualiza los datos de un usuario
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: Id del usuario que se quiere actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/updateUser'
+      responses:
+        "200":
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User updated
+        "404":
+          description: No existe un usuario con ese id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+                    example: User not found
+        "500":
+          description: Error interno del servidor
+
+    delete:
+      summary: Elimina un usuario
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: Id del usuario que se quiere eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Usuario eliminado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: User deleted
+        "500":
+          description: Error interno del servidor

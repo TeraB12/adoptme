@@ -1,45 +1,110 @@
 # AdoptMe
 
-Proyecto de la diplomatura Programacion Backend III de Coderhouse.
+Proyecto final de la diplomatura de Programacion Backend III de Coderhouse.
+
+Es una API para un sistema de adopcion de mascotas. Permite manejar usuarios,
+mascotas, sesiones y adopciones. Ademas tiene un modulo de mocks para generar
+datos de prueba, la documentacion del modulo de usuarios hecha con Swagger y
+los tests funcionales del router de adopciones.
+
+## Tecnologias
+
+- Node.js y Express
+- MongoDB con Mongoose
+- Mocha, Chai y Supertest para los tests
+- Swagger para la documentacion
+- Docker
 
 ## Instalacion
+
+Clonar el repositorio e instalar las dependencias:
 
 ```bash
 npm install
 ```
 
-Copiar `.env.example` a `.env` y completar la conexion a Mongo:
+Despues copiar el archivo `.env.example` a `.env` y completar los datos:
 
 ```
 PORT=8080
 MONGO_URL=mongodb://localhost:27017/adoptme
+MONGO_URL_TEST=mongodb://localhost:27017/adoptme_test
 ```
 
-## Ejecucion
+`MONGO_URL_TEST` es la base que se usa para correr los tests, conviene que sea
+distinta a la de desarrollo porque las colecciones se borran en cada test.
+
+## Como levantar el proyecto
 
 ```bash
 npm start
 ```
 
-Para desarrollo con recarga automatica:
+Y para desarrollo, con nodemon:
 
 ```bash
 npm run dev
 ```
 
+El servidor queda escuchando en el puerto 8080.
+
+## Tests
+
+```bash
+npm test
+```
+
+Corre los tests funcionales de `adoption.router.js`. Se prueban los tres
+endpoints del router, tanto los casos que funcionan bien como los que devuelven
+error: adopcion inexistente, usuario inexistente, mascota inexistente y mascota
+que ya fue adoptada.
+
+## Documentacion
+
+La documentacion del modulo de usuarios esta hecha con Swagger y se puede ver
+levantando el proyecto y entrando a:
+
+```
+http://localhost:8080/api/docs
+```
+
 ## Endpoints
 
-### Mocks
+Usuarios:
 
-| Metodo | Ruta | Descripcion |
-| --- | --- | --- |
-| GET | `/api/mocks/mockingpets` | Genera mascotas de prueba sin guardarlas. Acepta `?quantity=` (por defecto 100). |
-| GET | `/api/mocks/mockingusers` | Genera usuarios de prueba sin guardarlos. Acepta `?quantity=` (por defecto 50). |
-| POST | `/api/mocks/generateData` | Genera e inserta registros en la base. Recibe `{ "users": number, "pets": number }`. |
+- `GET /api/users` devuelve todos los usuarios
+- `GET /api/users/:uid` devuelve un usuario por id
+- `PUT /api/users/:uid` actualiza un usuario
+- `DELETE /api/users/:uid` elimina un usuario
 
-Los usuarios generados usan la contraseña `coder123` encriptada con bcrypt, el rol varia entre `user` y `admin`, y el campo `pets` se devuelve como un array vacio.
+Mascotas:
 
-Ejemplo:
+- `GET /api/pets` devuelve todas las mascotas
+- `POST /api/pets` crea una mascota
+- `POST /api/pets/withimage` crea una mascota con imagen
+- `PUT /api/pets/:pid` actualiza una mascota
+- `DELETE /api/pets/:pid` elimina una mascota
+
+Adopciones:
+
+- `GET /api/adoptions` devuelve todas las adopciones
+- `GET /api/adoptions/:aid` devuelve una adopcion por id
+- `POST /api/adoptions/:uid/:pid` adopta una mascota
+
+Sesiones:
+
+- `POST /api/sessions/register` registra un usuario
+- `POST /api/sessions/login` inicia sesion
+- `GET /api/sessions/current` devuelve el usuario logueado
+
+Mocks:
+
+- `GET /api/mocks/mockingpets` genera mascotas de prueba sin guardarlas
+- `GET /api/mocks/mockingusers` genera 50 usuarios de prueba sin guardarlos
+- `POST /api/mocks/generateData` genera e inserta usuarios y mascotas en la base
+
+Los dos primeros aceptan `?quantity=` para cambiar la cantidad. El tercero
+recibe por body los numeros de usuarios y mascotas a insertar:
 
 ```bash
 curl -X POST http://localhost:8080/api/mocks/generateData \
@@ -47,13 +112,30 @@ curl -X POST http://localhost:8080/api/mocks/generateData \
   -d "{\"users\":20,\"pets\":10}"
 ```
 
-Los registros insertados se pueden comprobar con `GET /api/users` y `GET /api/pets`.
+Los usuarios generados tienen la contraseña `coder123` encriptada, el rol varia
+entre `user` y `admin` y el campo `pets` viene vacio.
 
-### Resto de la API
+## Docker
 
-| Metodo | Ruta |
-| --- | --- |
-| GET / PUT / DELETE | `/api/users` |
-| GET / POST / PUT / DELETE | `/api/pets` |
-| GET / POST | `/api/adoptions` |
-| POST | `/api/sessions` |
+Imagen del proyecto en Docker Hub:
+
+https://hub.docker.com/r/USUARIO_DOCKERHUB/adoptme
+
+Para bajarla y ejecutarla:
+
+```bash
+docker pull USUARIO_DOCKERHUB/adoptme:latest
+```
+
+```bash
+docker run -p 8080:8080 -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" USUARIO_DOCKERHUB/adoptme:latest
+```
+
+La variable `MONGO_URL` es obligatoria. Si la base de datos corre en Atlas hay
+que pasar la cadena de conexion de Atlas en lugar de la de localhost.
+
+Para construir la imagen a mano desde el repositorio:
+
+```bash
+docker build -t adoptme .
+```
