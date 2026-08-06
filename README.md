@@ -1,6 +1,6 @@
 # AdoptMe
 
-Proyecto final de la diplomatura de Programacion Backend III de Coderhouse.
+Proyecto de Programacion Backend III de Coderhouse.
 
 Es una API para un sistema de adopcion de mascotas. Permite manejar usuarios,
 mascotas, sesiones y adopciones. Ademas tiene un modulo de mocks para generar
