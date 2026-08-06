@@ -119,16 +119,16 @@ entre `user` y `admin` y el campo `pets` viene vacio.
 
 Imagen del proyecto en Docker Hub:
 
-https://hub.docker.com/r/USUARIO_DOCKERHUB/adoptme
+https://hub.docker.com/r/terab12/adoptme
 
 Para bajarla y ejecutarla:
 
 ```bash
-docker pull USUARIO_DOCKERHUB/adoptme:latest
+docker pull terab12/adoptme:latest
 ```
 
 ```bash
-docker run -p 8080:8080 -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" USUARIO_DOCKERHUB/adoptme:latest
+docker run -p 8080:8080 -e MONGO_URL="mongodb://host.docker.internal:27017/adoptme" terab12/adoptme:latest
 ```
 
 La variable `MONGO_URL` es obligatoria. Si la base de datos corre en Atlas hay
